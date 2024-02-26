@@ -12,7 +12,9 @@
             <ul>
                 <li><a href="/home">Home</a></li>
                 <li><a href="/product">Produtos</a></li>
-                <li><a href="/table">Mesas</a></li>
+                <li><a href="/qrcode">QrCode</a></li>
+                <li><a href="/kitchen">Cozinha</a></li>
+                <li><a href="/Requests">Pedidos</a></li>
             </ul>
         </nav>      
     </header>
@@ -28,6 +30,8 @@
                 <input type="text" name="expiration_date" class="expiration_date" id="expiration_date">
                 <label for="quantity">Quantidade:</label>
                 <input type="number" name="quantity" class="quantity" id="quantity">
+                <label for="category">Categoria:</label>
+                <input type="text" name="category" class="category" id="category">
                 <input type="submit" value="Cadastrar">
             </form>
         </section>
@@ -58,8 +62,8 @@
         products.forEach(product => {
             const listItem = document.createElement('li');
             listItem.innerHTML = `
-                <span>Nome: ${product.name}, Preço: R$${product.price}, Data de Validade: ${product.expiration_date}, Quantidade: ${product.quantity}</span>
-                <button onclick="editProduct(${product.id}, '${product.name}', ${product.price}, '${product.expiration_date}', ${product.quantity})">Editar</button>
+                <span>Nome: ${product.name}, Preço: R$${product.price}, Data de Validade: ${product.expiration_date}, Quantidade: ${product.quantity},Categoria: ${product.category}</span>
+                <button onclick="editProduct(${product.id}, '${product.name}', ${product.price}, '${product.expiration_date}', ${product.quantity}, '${product.category}')">Editar</button>
                 <button onclick="deleteProduct(${product.id})">Excluir</button>
             `;
             productList.appendChild(listItem);
@@ -87,21 +91,20 @@
             .catch(error => console.error('Erro ao excluir o produto:',error))
         }
 
-        function editProduct(id, name, price, expiration_date, quantity) {
+        function editProduct(id, name, price, expiration_date, quantity, category) {
             const newName = prompt('Digite o novo nome:', name);
             const newPrice = parseFloat(prompt('Digite o novo preço:', price));
-
             const newExpirationDate = prompt('Digite a nova data de validade:', expiration_date);
-
             const newQuantity = parseInt(prompt('Digite a nova quantidade:', quantity));
+            const newCategory = prompt('Digite a nova categoria:', category); // Prompt for new category
 
-            if (newName !== null && !isNaN(newPrice) && newExpirationDate !== null && !isNaN(newQuantity)) {
+            if (newName !== null && !isNaN(newPrice) && newExpirationDate !== null && !isNaN(newQuantity) && newCategory !== null) {
                 fetch('/product/edit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ id, name: newName, price: newPrice, expiration_date: newExpirationDate, quantity: newQuantity })
+                    body: JSON.stringify({ id, name: newName, price: newPrice, expiration_date: newExpirationDate, quantity: newQuantity, category: newCategory }) // Include newCategory in the JSON body
                 })
                 .then(response => {
                     if (response.ok) {
@@ -112,6 +115,8 @@
                 })
                 .catch(error => console.error('Erro ao editar o produto:', error));
             }
+    }
+
 
             const deleteButton = document.createElement('button');
             deleteButton.textContent = 'Excluir';
@@ -121,7 +126,7 @@
 
 };
 
-}
+
 
     </script>
 </body>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cozinha</title>
+</head>
+<body>
+    <header>
+        <h1>Tela Cozinha</h1>
+        <nav>
+            <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/product">Produtos</a></li>
+                <li><a href="/qrcode">QrCode</a></li>
+                <li><a href="/kitchen">Cozinha</a></li>
+                <li><a href="/Requests">Pedidos</a></li>
+            </ul>
+        </nav>      
+    </header>
+    <main>
+        <section>
+            <h1>Lista de Pedidos</h1>
+            <ul id="orders-list">
+                <!-- Os pedidos serão preenchidos dinamicamente aqui -->
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>todos os direitos reservados 2024</p>
+    </footer>
+    <script src="app.js"></script>
+    <script>
+        // Função para carregar os pedidos quando a página carrega
+        window.onload = function() {
+    fetch('/orders')
+        .then(response => response.json())
+        .then(orders => {
+            const ordersList = document.getElementById('orders-list');
+            orders.forEach(order => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Pedido ${order.id} - Mesa ${order.number_table} - ${order.user_name} - ${order.product}`;
+                const productList = document.createElement('ul');
+                
+                // Itera sobre os produtos de cada pedido
+                order.products.forEach(product => {
+                    const productItem = document.createElement('li');
+                    productItem.textContent = `${product.name} - Quantidade: ${product.quantity} - Preço: ${product.price}`;
+                    productList.appendChild(productItem);
+                });
+                
+                listItem.appendChild(productList);
+                
+                const deliveredButton = document.createElement('button');
+                deliveredButton.textContent = 'Marcar como Entregue';
+                deliveredButton.onclick = function() {
+                    markAsDelivered(order.id);
+                };
+                listItem.appendChild(deliveredButton);
+                
+                ordersList.appendChild(listItem);
+            });
+        })
+        .catch(error => console.error('Erro ao carregar os pedidos:', error));
+};
+
+
+        // Função para marcar o pedido como entregue
+        function markAsDelivered(orderId) {
+            fetch('/mark-as-delivered', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderId: orderId
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Pedido marcado como entregue!');
+                    // Recarregar a lista de pedidos ou fazer qualquer outra ação necessária
+                } else {
+                    alert('Erro ao marcar o pedido como entregue.');
+                }
+            })
+            .catch(error => console.error('Erro ao marcar o pedido como entregue:', error));
+        }
+    </script>
+</body>
+</html>

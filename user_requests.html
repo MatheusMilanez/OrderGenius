@@ -1,0 +1,121 @@
+<!-- user_requests.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Request</title>
+</head>
+<body>
+    <header>
+        <h1>Tela User Request</h1>
+        <nav>
+            <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/product">Produtos</a></li>
+                <li><a href="/qrcode">QrCode</a></li>
+                <li><a href="/kitchen">Cozinha</a></li>
+                <li><a href="/Requests">Pedidos</a></li>
+            </ul>
+        </nav>      
+    </header>
+    <main>
+        <section id="products-section">
+            <h2>Produtos Disponíveis</h2>
+            <ul id="product-list">
+                <!-- Os produtos serão preenchidos dinamicamente aqui -->
+            </ul>
+        </section>
+        <section id="cart-section">
+            <h2>Carrinho de Compras</h2>
+            <ul id="cart-list">
+                <!-- Os itens do carrinho serão preenchidos dinamicamente aqui -->
+            </ul>
+            <label for="table-number">Número da Mesa:</label>
+            <input type="text" id="table-number" name="table-number"><br>
+            <label for="user-name">Nome do Usuário:</label>
+            <input type="text" id="user-name" name="user-name"><br>
+            <button onclick="confirmOrder()">Confirmar Pedido</button>
+        </section>
+    </main>
+    <footer>
+        <p>todos os direitos reservados 2024</p>
+    </footer>
+    <script src="app.js"></script>
+    <script>
+        // Função para carregar os produtos quando a página carrega
+        window.onload = function() {
+            fetch('/products')
+                .then(response => response.json())
+                .then(products => {
+                    const productList = document.getElementById('product-list');
+                    productList.innerHTML = ''; // Limpa a lista de produtos antes de preenchê-la novamente
+                    products.forEach(product => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${product.name} - ${product.price}`;
+                        const quantityInput = document.createElement('input');
+                        quantityInput.type = 'number';
+                        quantityInput.min = 1;
+                        quantityInput.value = 1;
+                        listItem.appendChild(quantityInput);
+                        const addButton = document.createElement('button');
+                        addButton.textContent = 'Adicionar ao Carrinho';
+                        addButton.onclick = function() {
+                            addToCart(product.id, parseInt(quantityInput.value));
+                        };
+                        listItem.appendChild(addButton);
+                        productList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Erro ao carregar os produtos:', error));
+        };
+
+        // Função para adicionar produto ao carrinho
+        function addToCart(productId, quantity) {
+            fetch('/add-to-cart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: quantity
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Produto adicionado ao carrinho!');
+                } else {
+                    alert('Erro ao adicionar o produto ao carrinho.');
+                }
+            })
+            .catch(error => console.error('Erro ao adicionar o produto ao carrinho:', error));
+        }
+
+        // Função para confirmar o pedido
+        function confirmOrder() {
+            const tableNumber = document.getElementById('table-number').value;
+            const userName = document.getElementById('user-name').value;
+            fetch('/confirm-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tableNumber: tableNumber,
+                    userName: userName
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Pedido confirmado com sucesso!');
+                    // Redirecionar para a página de pedidos ou fazer qualquer outra ação necessária
+                } else {
+                    alert('Erro ao confirmar o pedido.');
+                }
+            })
+            .catch(error => console.error('Erro ao confirmar o pedido:', error));
+        }
+    </script>
+</body>
+</html>
