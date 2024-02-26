@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos</title>
+</head>
+<body>
+    <header>
+        <h1>Tela de Cadastro de Produtos</h1>
+        <nav>
+            <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/product">Produtos</a></li>
+                <li><a href="/table">Mesas</a></li>
+            </ul>
+        </nav>      
+    </header>
+    <main>
+        <section>
+            <h1>Cadastro de Produtos</h1>
+            <form action="/product" method="POST">
+                <label for="name">Nome:</label>
+                <input type="text" name="name" class="name" id="name">
+                <label for="price">Preço:</label>
+                <input type="number" name="price" class="price" id="price">
+                <label for="expiration_date">Data de Validade:</label>
+                <input type="text" name="expiration_date" class="expiration_date" id="expiration_date">
+                <label for="quantity">Quantidade:</label>
+                <input type="number" name="quantity" class="quantity" id="quantity">
+                <input type="submit" value="Cadastrar">
+            </form>
+        </section>
+        <section>
+            <h1>Lista de Produtos</h1>
+            <ul id="product-list">
+                <li>
+                    Nome: Teste , Preço:R$: 10.50 , Data de Validade: 10/12/2024 , Quantidade: 30
+                    <button>X</button>
+
+                </li>
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>todos os direitos reservados 2024</p>
+    </footer>
+    <script src="app.js"></script>
+    <script>
+        
+    window.onload = function() {
+        fetch('/products')
+        .then(response => response.json())
+        .then(products => {
+        const productList = document.getElementById('product-list');
+        productList.innerHTML = '';
+
+        products.forEach(product => {
+            const listItem = document.createElement('li');
+            listItem.innerHTML = `
+                <span>Nome: ${product.name}, Preço: R$${product.price}, Data de Validade: ${product.expiration_date}, Quantidade: ${product.quantity}</span>
+                <button onclick="editProduct(${product.id}, '${product.name}', ${product.price}, '${product.expiration_date}', ${product.quantity})">Editar</button>
+                <button onclick="deleteProduct(${product.id})">Excluir</button>
+            `;
+            productList.appendChild(listItem);
+        });
+    })
+    .catch(error => console.error('Erro ao obter a lista de produtos:', error));
+};
+
+        function deleteProduct(productId){
+            fetch('/product/delete',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+
+                body: JSON.stringify({id: productId})
+            })
+            .then(response =>{
+                if(response.ok){
+                    window.location.reload();
+                }else{
+                    console.error('Error ao excluir o produto:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Erro ao excluir o produto:',error))
+        }
+
+        function editProduct(id, name, price, expiration_date, quantity) {
+            const newName = prompt('Digite o novo nome:', name);
+            const newPrice = parseFloat(prompt('Digite o novo preço:', price));
+
+            const newExpirationDate = prompt('Digite a nova data de validade:', expiration_date);
+
+            const newQuantity = parseInt(prompt('Digite a nova quantidade:', quantity));
+
+            if (newName !== null && !isNaN(newPrice) && newExpirationDate !== null && !isNaN(newQuantity)) {
+                fetch('/product/edit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ id, name: newName, price: newPrice, expiration_date: newExpirationDate, quantity: newQuantity })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        console.error('Erro ao editar o produto:', response.statusText);
+                    }
+                })
+                .catch(error => console.error('Erro ao editar o produto:', error));
+            }
+
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Excluir';
+            deleteButton.onclick = function() {
+            deleteProduct(product.id);
+
+
+};
+
+}
+
+    </script>
+</body>
+</html>

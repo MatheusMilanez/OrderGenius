@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mesas</title>
+</head>
+<body>
+    <header>
+        <h1>Tela de Cadastro de Mesas</h1>
+        <nav>
+            <ul>
+                <li><a href="/home">Home</a></li>
+                <li><a href="/product">Produtos</a></li>
+                <li><a href="/table">Mesas</a></li>
+            </ul>
+        </nav>      
+    </header>
+    <main>
+        <section>
+            <h1>Cadastro de Mesas</h1>
+            <form action="/table" method="POST">
+                <label for="name_table">Nome da Mesa:</label>
+                <input type="text" name="name_table" class="name_table" id="name_table">
+                <input type="submit" value="Cadastrar">
+            </form>
+        </section>
+        <section>
+            <h1>Mesas Cadastradas</h1>
+            <ul id="tables-list">
+                
+            </ul>
+        </section>
+    </main>
+    <footer>
+        <p>Todos os direitos reservados 2024</p>
+    </footer>
+    <script src="app.js"></script>
+    <script>
+
+
+        // Função para exibir as mesas cadastradas
+        function displayTables(tables) {
+            const tablesList = document.getElementById('tables-list');
+            tablesList.innerHTML = ''; // Limpa a lista antes de adicionar os novos itens
+            tables.forEach(table => {
+                const li = document.createElement('li');
+                li.textContent = `ID: ${table.id}, Nome: ${table.name_table}, QrCode: ${table.qrcode}`;
+                tablesList.appendChild(li);
+            });
+        }
+
+        // Função para carregar as mesas cadastradas ao carregar a página
+        window.onload = async function() {
+            try {
+                const response = await fetch('/tables');
+                const data = await response.json();
+                displayTables(data);
+            } catch (error) {
+                console.error('Erro ao buscar as mesas:', error);
+            }
+        };
+
+     
+    </script>
+</body>
+</html>
