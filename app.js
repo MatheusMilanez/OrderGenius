@@ -1,7 +1,7 @@
 //app.js
 const express = require('express');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 //QrCode
 const qr = require('qrcode');
@@ -22,7 +22,8 @@ const db = new sqlite3.Database('./db/db.db',(err)=>{
     }
 });
 
-
+// Define o diretório raiz para servir arquivos estáticos
+app.use(express.static(__dirname));
 
 //Routes
 app.get('/',(req,res)=>{
@@ -226,7 +227,7 @@ app.post('/add-to-cart', (req, res) => {
     });
 });
 
-// Endpoint para confirmar o pedido
+// Função para confirmar o pedido
 app.post('/confirm-order', async (req, res) => {
     const { tableNumber, userName } = req.body;
     const totalBalance = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -239,35 +240,20 @@ app.post('/confirm-order', async (req, res) => {
     try {
         // Extrai apenas os nomes dos produtos
         const productNames = cartItems.map(item => item.name);
+        
+        // Extrai apenas as quantidades dos produtos
+        const productQuantities = cartItems.map(item => item.quantity);
 
-        // Inicia uma transação
-        await runTransaction(async (db) => {
-            // Busca os IDs dos produtos no banco de dados
-            const productIds = cartItems.map(item => item.id);
-
-            // Busca os nomes dos produtos correspondentes aos IDs
-            const productNames = await Promise.all(productIds.map(async (id) => {
-                return new Promise((resolve, reject) => {
-                    db.get('SELECT name FROM product WHERE id = ?', [id], (err, row) => {
-                        if (err) {
-                            reject(err);
-                        } else {
-                            resolve(row.name);
-                        }
-                    });
-                });
-            }));
-
-            // Insere o pedido no banco de dados com os nomes dos produtos
-            await db.run('INSERT INTO requests (product, number_table, user_name, total_balance) VALUES (?, ?, ?, ?)', [JSON.stringify(productNames), tableNumber, userName, totalBalance]);
-            cartItems = []; // Limpa o carrinho após o pedido ser confirmado
-            res.sendStatus(200);
-        });
+        // Insere o pedido no banco de dados com os nomes e quantidades dos produtos
+        await db.run('INSERT INTO requests (product, quantity, number_table, user_name, total_balance) VALUES (?, ?, ?, ?, ?)', [JSON.stringify(productNames), JSON.stringify(productQuantities), tableNumber, userName, totalBalance]);
+        cartItems = []; // Limpa o carrinho após o pedido ser confirmado
+        res.sendStatus(200);
     } catch (error) {
         console.error('Erro ao confirmar o pedido:', error);
         return res.status(500).send('Erro ao confirmar o pedido');
     }
 });
+
 
 
 // Função para executar uma transação
