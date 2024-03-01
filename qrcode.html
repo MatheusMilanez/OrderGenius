@@ -14,18 +14,34 @@
                 <li><a href="/product">Produtos</a></li>
                 <li><a href="/qrcode">QrCode</a></li>
                 <li><a href="/kitchen">Cozinha</a></li>
-                <li><a href="/Requests">Pedidos</a></li>
+                <li><a href="/requests">Pedidos</a></li>
             </ul>
         </nav>      
     </header>
     <main>
         <section>
             <h1>CONTEUDO DA TELA QrCode</h1>
+            <!-- Adicione um ID à tag img para poder referenciá-la no script -->
+            <img id="qrcode" src="" alt="QR Code">
         </section>
     </main>
     <footer>
         <p>todos os direitos reservados 2024</p>
     </footer>
-    <script src="app.js"></script>
+
+    <!-- Adicione a biblioteca qrcode.js -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@latest"></script>
+    <script>
+        // Gera o QR Code dinamicamente e atualiza a tag img
+        QRCode.toDataURL('/user_requests', function(err, qrCodeURL) {
+            if (err) {
+                console.error('Erro ao gerar QR Code:', err);
+            } else {
+                console.log('QR Code gerado com sucesso');
+                console.log('URL do QR Code:', qrCodeURL);
+                document.getElementById('qrcode').src = qrCodeURL;
+            }
+        });
+    </script>
 </body>
 </html>

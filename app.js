@@ -6,10 +6,83 @@ const PORT = process.env.PORT || 3000;
 //QrCode
 const qr = require('qrcode');
 
+// Gera o QR Code dinamicamente
+qr.toDataURL('http://10.100.1.13:3000/user_requests', (err, qrCodeURL) => {
+    if (err) {
+        console.error('Erro ao gerar QR Code:', err);
+    } else {
+        console.log('QR Code gerado com sucesso');
+        console.log('URL do QR Code:', qrCodeURL);
+
+    }
+});
+
+
 // middleware , Analyze the request body data
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+// Middleware e configurações do servidor
+
+app.get('/qrcode', async (req, res) => {
+    try {
+        const qrCodeURL = await generateQRCodeURL('/user_requests');
+        const html = generateHTMLWithQRCode(qrCodeURL);
+        res.send(html);
+    } catch (error) {
+        console.error('Erro ao gerar QR Code:', error);
+        res.status(500).send('Erro interno do servidor');
+    }
+});
+
+function generateQRCodeURL(data) {
+    return new Promise((resolve, reject) => {
+        qr.toDataURL(data, (err, url) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(url);
+            }
+        });
+    });
+}
+
+function generateHTMLWithQRCode(qrCodeURL) {
+    return `
+    <!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>QrCode</title>
+    </head>
+    <body>
+        <header>
+            <h1>Tela QrCode</h1>
+            <nav>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/product">Produtos</a></li>
+                    <li><a href="/qrcode">QrCode</a></li>
+                    <li><a href="/kitchen">Cozinha</a></li>
+                    <li><a href="/requests">Pedidos</a></li>
+                </ul>
+            </nav>      
+        </header>
+        <main>
+            <section>
+                <h1>CONTEUDO DA TELA QrCode</h1>
+                <img src="${qrCodeURL}" alt="QR Code">
+            </section>
+        </main>
+        <footer>
+            <p>todos os direitos reservados 2024</p>
+        </footer>
+    </body>
+    </html>
+    `;
+}
 
 //connect db
 const sqlite3 = require('sqlite3').verbose();
