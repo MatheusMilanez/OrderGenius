@@ -99,7 +99,7 @@ const db = new sqlite3.Database('./db/db.db',(err)=>{
 app.use(express.static(__dirname));
 
 //Routes
-app.get('/OrderGenius',(req,res)=>{
+app.get('/',(req,res)=>{
     res.sendFile(__dirname + '/login.html');
 });
 
