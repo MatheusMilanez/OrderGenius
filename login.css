@@ -1,0 +1,103 @@
+/*Login Page*/
+
+/*Main*/
+
+.main{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(231, 228, 228);
+}
+
+/*Form*/
+
+.form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 250px;
+    height: 250px;
+    border: 1px solid #FF7F50;
+    border-radius: 20px;
+    background-color: #FF7F50;
+}
+
+.title-login{
+    font-size: 25px;
+    font-weight: 400;
+    text-transform: uppercase;
+    margin: -10px 0 10px 0;
+    color: #FFF;
+}
+
+.input-aling{
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.material-symbols-outlined{
+    color: #FFF;
+    margin-right: 10px;  
+}
+
+input:focus{
+    box-shadow: none;
+    border: none;
+    outline: 0;
+}
+
+.login{
+    width: 100%;
+    max-width: 200px;
+    max-height: 25px;
+    height: 25px;
+    border: none;
+    border-radius: 5px;
+    padding-left: 10px;
+}
+
+.login::placeholder{
+    position: absolute;
+    left: 10px;
+}
+
+.password{
+    width: 100%;
+    max-width: 200px;
+    max-height: 25px;
+    height: 25px;
+    border: none;
+    border-radius: 5px;
+    padding-left: 10px;
+}
+
+.password::placeholder{
+    position: absolute;
+    left: 10px;
+}
+
+.submit{
+    width: 120px;
+    height: 30px;
+    font-size: 20px;
+    background-color: #FFF;
+    color: #FF7F50;
+    border: none;
+    border-radius: 5px;
+    border-left: 20px;
+    cursor: pointer;
+    transition: 600ms;
+    margin: 10px 0 -20px 0;
+}
+
+.submit:hover{
+    background-color: #FF7F50;
+    color: #FFF;
+    border: 1px solid #FFF;
+    transition: 600ms;
+}
