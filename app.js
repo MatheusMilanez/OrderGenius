@@ -56,31 +56,50 @@ function generateHTMLWithQRCode(qrCodeURL) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>QrCode</title>
+        <link rel="stylesheet" href="qrcode.css">
+        <link rel="stylesheet" href="reset.css">
     </head>
     <body>
-        <header>
-            <h1>Tela QrCode</h1>
+        <header class="header">
+            <h1 class="title-home">Tela QrCode</h1>
             <nav>
-                <ul>
-                    <li><a href="/home">Home</a></li>
-                    <li><a href="/product">Produtos</a></li>
-                    <li><a href="/qrcode">QrCode</a></li>
-                    <li><a href="/kitchen">Cozinha</a></li>
-                    <li><a href="/requests">Pedidos</a></li>
+                <ul class="menu">
+                    <li class="li-menu"><a href="/home" class="a-menu">Home</a></li>
+                    <li class="li-menu"><a href="/product" class="a-menu">Produtos</a></li>
+                    <li class="li-menu"><a href="/qrcode" class="a-menu">QrCode</a></li>
+                    <li class="li-menu"><a href="/kitchen" class="a-menu">Cozinha</a></li>
+                    <li class="li-menu"><a href="/Requests" class="a-menu">Pedidos</a></li>
                 </ul>
             </nav>      
         </header>
-        <main>
+        <main class="main">
             <section>
-                <h1>CONTEUDO DA TELA QrCode</h1>
+                <h1>QrCode </h1>
+                <!-- Adicione um ID à tag img para poder referenciá-la no script -->
                 <img src="${qrCodeURL}" alt="QR Code">
             </section>
         </main>
-        <footer>
+        <footer class="footer">
             <p>todos os direitos reservados 2024</p>
         </footer>
+    
+        <!-- Adicione a biblioteca qrcode.js -->
+        <script src="https://cdn.jsdelivr.net/npm/qrcode@latest"></script>
+        <script>
+            // Gera o QR Code dinamicamente e atualiza a tag img
+            QRCode.toDataURL('/user_requests', function(err, qrCodeURL) {
+                if (err) {
+                    console.error('Erro ao gerar QR Code:', err);
+                } else {
+                    console.log('QR Code gerado com sucesso');
+                    console.log('URL do QR Code:', qrCodeURL);
+                    document.getElementById('qrcode').src = qrCodeURL;
+                }
+            });
+        </script>
     </body>
     </html>
+    
     `;
 }
 

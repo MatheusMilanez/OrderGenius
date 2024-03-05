@@ -4,21 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cozinha</title>
+    <link rel="stylesheet" href="kitchen.css">
+    <link rel="stylesheet" href="reset.css">
 </head>
 <body>
-    <header>
-        <h1>Tela Cozinha</h1>
+    <header class="header">
+        <h1 class="title-home">Tela Home</h1>
         <nav>
-            <ul>
-                <li><a href="/home">Home</a></li>
-                <li><a href="/product">Produtos</a></li>
-                <li><a href="/qrcode">QrCode</a></li>
-                <li><a href="/kitchen">Cozinha</a></li>
-                <li><a href="/Requests">Pedidos</a></li>
+            <ul class="menu">
+                <li class="li-menu"><a href="/home" class="a-menu">Home</a></li>
+                <li class="li-menu"><a href="/product" class="a-menu">Produtos</a></li>
+                <li class="li-menu"><a href="/qrcode" class="a-menu">QrCode</a></li>
+                <li class="li-menu"><a href="/kitchen" class="a-menu">Cozinha</a></li>
+                <li class="li-menu"><a href="/Requests" class="a-menu">Pedidos</a></li>
             </ul>
         </nav>      
     </header>
-    <main>
+    <main class="main">
         <section>
             <h1>Lista de Pedidos</h1>
             <ul id="orders-list">
@@ -26,7 +28,7 @@
             </ul>
         </section>
     </main>
-    <footer>
+    <footer class="footer">
         <p>todos os direitos reservados 2024</p>
     </footer>
     <script src="app.js"></script>
