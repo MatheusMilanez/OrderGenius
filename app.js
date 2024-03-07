@@ -7,12 +7,12 @@ const PORT = process.env.PORT || 3000;
 const qr = require('qrcode');
 
 // Gera o QR Code dinamicamente
-qr.toDataURL('http://10.100.1.13:3000/user_requests', (err, qrCodeURL) => {
+qr.toDataURL('http://192.168.137.1:3000/user_requests', (err, qrCodeURL) => {
     if (err) {
         console.error('Erro ao gerar QR Code:', err);
     } else {
         console.log('QR Code gerado com sucesso');
-        console.log('URL do QR Code:', qrCodeURL);
+        //console.log('URL do QR Code:', qrCodeURL);
 
     }
 });
@@ -27,7 +27,7 @@ app.use(express.json());
 
 app.get('/qrcode', async (req, res) => {
     try {
-        const qrCodeURL = await generateQRCodeURL('/user_requests');
+        const qrCodeURL = await generateQRCodeURL('http://192.168.137.1:3000/user_requests');
         const html = generateHTMLWithQRCode(qrCodeURL);
         res.send(html);
     } catch (error) {
@@ -76,7 +76,7 @@ function generateHTMLWithQRCode(qrCodeURL) {
             <section>
                 <h1>QrCode </h1>
                 <!-- Adicione um ID à tag img para poder referenciá-la no script -->
-                <img src="${qrCodeURL}" alt="QR Code">
+                <img src="${qrCodeURL}" alt="QR Code" id="qrcode">
             </section>
         </main>
         <footer class="footer">
